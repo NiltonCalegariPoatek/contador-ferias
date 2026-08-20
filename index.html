@@ -127,9 +127,35 @@
 
   /* Contador */
   .countdown {
+    position: relative;
     display: flex;
     gap: clamp(12px, 4vw, 40px);
     align-items: flex-start;
+  }
+
+  /* Badge de urgência estilo adesivo no canto do contador */
+  .badge {
+    position: absolute;
+    top: -30px;
+    right: -14px;
+    z-index: 5;
+    background: #e0002a;
+    color: #fff;
+    font-size: clamp(0.75rem, 2vw, 1rem);
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 2px solid #fff;
+    box-shadow: 0 6px 18px rgba(224, 0, 42, 0.45);
+    white-space: nowrap;
+    animation: badgeWiggle 0.8s ease-in-out infinite;
+  }
+
+  @keyframes badgeWiggle {
+    0%, 100% { transform: rotate(5deg) scale(1); }
+    50%      { transform: rotate(11deg) scale(1.08); }
   }
 
   .unit {
@@ -251,6 +277,7 @@
   <div class="sublabel">restam apenas:</div>
 
   <div class="countdown" id="countdown">
+    <div class="badge">⏰ O tempo tá acabando!</div>
     <div class="unit">
       <div class="value" id="hours">00</div>
       <div class="unit-label">HORAS</div>
