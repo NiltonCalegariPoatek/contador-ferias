@@ -175,6 +175,45 @@
     50%      { opacity: 0.25; }
   }
 
+  /* Botão de socorro via Slack */
+  .help-btn {
+    font-family: inherit;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    font-weight: 800;
+    padding: 16px 32px;
+    border-radius: 999px;
+    border: 3px solid #111;
+    background: #611f69; /* roxo do Slack */
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(97, 31, 105, 0.35);
+    animation: pulseScale 1.5s ease-in-out infinite;
+  }
+
+  .help-btn:hover {
+    background: #7c2d87;
+  }
+
+  #toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 30;
+    pointer-events: none;
+    max-width: 90vw;
+    text-align: center;
+  }
+
+  #toast.show { opacity: 1; }
+
   /* Botão para ativar o giroscópio (aparece só no iOS, que exige permissão) */
   #gyro-btn {
     position: fixed;
@@ -227,7 +266,11 @@
       <div class="unit-label">SEGUNDOS</div>
     </div>
   </div>
+
+  <button class="help-btn" id="help-btn">🆘 ME AJUDE! — chamar o Nilton no Slack</button>
 </div>
+
+<div id="toast"></div>
 
 <script>
   // ---- Contador regressivo: férias começam 21/08/2026 às 17:00 (horário local) ----
@@ -296,6 +339,37 @@
     requestAnimationFrame(animateParallax);
   }
   animateParallax();
+
+  // ---- Botão de socorro via Slack ----
+  // O Slack não aceita texto pré-preenchido em links de DM, então o botão copia
+  // "ME AJUDE!" para a área de transferência e abre a conversa — é só colar e enviar.
+  // Preencha com os seus IDs do Slack:
+  //   SLACK_TEAM_ID: na URL do Slack no navegador, app.slack.com/client/T.../ (começa com T)
+  //   SLACK_USER_ID: seu perfil → ⋮ (três pontos) → "Copiar ID do membro" (começa com U)
+  const SLACK_TEAM_ID = 'COLOQUE_O_TEAM_ID_AQUI';
+  const SLACK_USER_ID = 'COLOQUE_O_MEMBER_ID_AQUI';
+
+  const helpBtn = document.getElementById('help-btn');
+  const toastEl = document.getElementById('toast');
+
+  helpBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText('ME AJUDE!');
+      toastEl.textContent = '✅ "ME AJUDE!" copiado — cole (Ctrl+V) no chat e envie!';
+    } catch {
+      toastEl.textContent = 'Abrindo o Slack…';
+    }
+    toastEl.classList.add('show');
+
+    setTimeout(() => {
+      window.open(
+        `https://slack.com/app_redirect?team=${SLACK_TEAM_ID}&channel=${SLACK_USER_ID}`,
+        '_blank'
+      );
+    }, 900);
+
+    setTimeout(() => toastEl.classList.remove('show'), 4000);
+  });
 
   // ---- Parallax com giroscópio no celular ----
   // A primeira leitura vira a posição "neutra"; a inclinação a partir dela move as grades
