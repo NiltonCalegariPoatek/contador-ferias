@@ -66,7 +66,8 @@
   .content {
     position: relative;
     z-index: 10;
-    height: 100%;
+    height: 100vh;
+    height: 100dvh; /* considera a barra de endereço dos navegadores mobile */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -74,6 +75,7 @@
     gap: 48px;
     text-align: center;
     padding: 24px;
+    padding-bottom: 80px; /* espaço para o footer fixo não cobrir o conteúdo */
   }
 
   /* Label estilo arco-íris letra a letra (como W o N d E r F u L W o R l D) */
@@ -286,6 +288,102 @@
     font-size: clamp(2rem, 6vw, 4.5rem);
     font-weight: 900;
     animation: rgbPulse 2s linear infinite, pulseScale 1s ease-in-out infinite;
+  }
+
+  /* ---- Responsivo: telas estreitas (celular em pé) ---- */
+  @media (max-width: 600px) {
+    .content {
+      gap: 28px;
+      padding: 16px 12px 90px;
+    }
+
+    .label {
+      font-size: 1.15rem;
+      letter-spacing: 1px;
+    }
+
+    .sublabel {
+      font-size: 0.9rem;
+      margin-top: -12px;
+    }
+
+    .countdown {
+      gap: 6px;
+    }
+
+    .value {
+      font-size: clamp(1.8rem, 11vw, 3rem);
+      min-width: 0;
+      padding: 10px 8px;
+      border-width: 2px;
+      border-radius: 12px;
+    }
+
+    .separator {
+      font-size: clamp(1.8rem, 11vw, 3rem);
+      padding-top: 10px;
+    }
+
+    .unit-label {
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+    }
+
+    /* Badge centralizado acima do contador para não estourar a lateral */
+    .badge {
+      top: -38px;
+      right: 0;
+      left: 0;
+      margin: 0 auto;
+      width: max-content;
+      font-size: 0.7rem;
+      padding: 6px 12px;
+    }
+
+    .help-btn {
+      font-size: 1rem;
+      padding: 12px 20px;
+      max-width: 92vw;
+    }
+
+    .footer {
+      font-size: 0.85rem;
+      padding: 10px 12px;
+    }
+
+    #toast {
+      font-size: 0.85rem;
+      bottom: 130px;
+    }
+
+    #gyro-btn {
+      font-size: 0.9rem;
+      padding: 10px 16px;
+      bottom: 60px;
+    }
+  }
+
+  /* ---- Responsivo: telas baixas (celular deitado) ---- */
+  @media (max-height: 520px) {
+    .content {
+      gap: 14px;
+      padding-bottom: 60px;
+    }
+
+    .label { font-size: 1.1rem; }
+    .sublabel { font-size: 0.85rem; margin-top: -6px; }
+
+    .value {
+      font-size: 2rem;
+      min-width: 0;
+      padding: 6px 14px;
+    }
+
+    .separator { font-size: 2rem; padding-top: 6px; }
+    .unit-label { font-size: 0.6rem; }
+    .badge { top: -26px; font-size: 0.65rem; padding: 5px 10px; }
+    .help-btn { font-size: 0.9rem; padding: 8px 18px; }
+    .footer { font-size: 0.8rem; padding: 8px 12px; }
   }
 </style>
 </head>
