@@ -175,6 +175,24 @@
     50%      { opacity: 0.25; }
   }
 
+  /* Botão para ativar o giroscópio (aparece só no iOS, que exige permissão) */
+  #gyro-btn {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 12px 20px;
+    border-radius: 999px;
+    border: 2px solid #111;
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+  }
+
   .done {
     font-size: clamp(2rem, 6vw, 4.5rem);
     font-weight: 900;
@@ -278,6 +296,40 @@
     requestAnimationFrame(animateParallax);
   }
   animateParallax();
+
+  // ---- Parallax com giroscópio no celular ----
+  // A primeira leitura vira a posição "neutra"; a inclinação a partir dela move as grades
+  let baseBeta = null, baseGamma = null;
+
+  function handleOrientation(e) {
+    if (e.beta === null || e.gamma === null) return;
+    if (baseBeta === null) { baseBeta = e.beta; baseGamma = e.gamma; }
+    const clamp = v => Math.max(-1, Math.min(1, v));
+    targetX = clamp((e.gamma - baseGamma) / 25); // inclinar p/ os lados
+    targetY = clamp((e.beta - baseBeta) / 25);   // inclinar p/ frente/trás
+  }
+
+  function enableGyro() {
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    // iOS 13+: o sensor só libera com permissão concedida a partir de um toque
+    const btn = document.createElement('button');
+    btn.id = 'gyro-btn';
+    btn.textContent = '📱 Ativar movimento';
+    document.body.appendChild(btn);
+    btn.addEventListener('click', () => {
+      DeviceOrientationEvent.requestPermission()
+        .then(state => { if (state === 'granted') enableGyro(); })
+        .catch(() => {});
+      btn.remove();
+    });
+  } else if ('DeviceOrientationEvent' in window) {
+    // Android e demais navegadores: funciona direto
+    enableGyro();
+  }
 </script>
 
 </body>
