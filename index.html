@@ -346,8 +346,9 @@
   // Preencha com os seus IDs do Slack:
   //   SLACK_TEAM_ID: na URL do Slack no navegador, app.slack.com/client/T.../ (começa com T)
   //   SLACK_USER_ID: seu perfil → ⋮ (três pontos) → "Copiar ID do membro" (começa com U)
-  const SLACK_TEAM_ID = 'E03RF3RQZU6'; // ID da organização (Enterprise Grid)
+  const SLACK_ORG_ID  = 'E03RF3RQZU6'; // ID da organização (Enterprise Grid)
   const SLACK_USER_ID = 'U03EQJW11BM'; // member ID do Nilton
+  const SLACK_DOMAIN  = 'poatek';      // subdomínio do workspace (<dominio>.slack.com)
 
   const helpBtn = document.getElementById('help-btn');
   const toastEl = document.getElementById('toast');
@@ -361,12 +362,17 @@
     }
     toastEl.classList.add('show');
 
+    // 1ª tentativa: abrir o app do Slack direto na DM (protocolo slack:// aceita o ID E...)
     setTimeout(() => {
-      window.open(
-        `https://slack.com/app_redirect?team=${SLACK_TEAM_ID}&channel=${SLACK_USER_ID}`,
-        '_blank'
-      );
-    }, 900);
+      window.location.href = `slack://user?team=${SLACK_ORG_ID}&id=${SLACK_USER_ID}`;
+    }, 600);
+
+    // 2ª tentativa: se o app não abriu (a página continua visível), abre o perfil na web
+    setTimeout(() => {
+      if (!document.hidden) {
+        window.open(`https://${SLACK_DOMAIN}.slack.com/team/${SLACK_USER_ID}`, '_blank');
+      }
+    }, 2200);
 
     setTimeout(() => toastEl.classList.remove('show'), 4000);
   });
